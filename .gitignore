@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files #
+#########################################
+__pycache__/
+
+# Environments #
+################
+.venv
+venv/
+
+# Ignore all credential files
+*.credentials.json
+#Except the sample one
+!sample.credentials.json
+
+# Personal Scratch Folder
+scratch/
