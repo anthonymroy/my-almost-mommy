@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %} Welcome to Lumenancer {% endblock %}</h1>
-    {% for post in posts %}
-        <a href="{{ url_for('post', post_id=post['id']) }}">
-            <h2>{{ post['title'] }}</h2>
-        </a>
-        <span class="badge badge-primary">{{ post['created'] }}</span>
-        <a href="{{ url_for('edit', id=post['id']) }}">
-            <span class="badge badge-warning">Edit</span>
-        </a>
-        <hr>
-    {% endfor %}
+    <form method="post">
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" name="first_name" size="15"
+                placeholder="Enter first name" class="form-control"
+                value="{{ request.form['first_name'] }}"></input>
+            <label for="last_name">Last Name</label>
+            <input type="text" name="last_name" size="15"
+                placeholder="Enter last name" class="form-control"
+                value="{{ request.form['last_name'] }}"></input>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Find</button>
+        </div>
+        <h2>{{name}}</h2>
+    </form>
 {% endblock %}
 

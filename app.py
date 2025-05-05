@@ -1,79 +1,58 @@
+from db import 
+from flask import Flask, render_template, request
 import json
+import random
 import sqlite3
-from flask import Flask, render_template, request, url_for, flash, redirect
-from werkzeug.exceptions import abort
 
-def get_db_connection():
+def one_in(num:int) -> bool:
+	ans = False
+	dice = range(num)
+	if random.choice(dice) == 0:
+		ans = True
+	return ans
+
+def get_db_connection() -> sqlite3.Connection:
     conn = sqlite3.connect('./db/database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
-def get_post(post_id):
+def GenerateRandomFemaleName(seed_str):
+    random.seed(seed_str)
     conn = get_db_connection()
-    post = conn.execute('SELECT * FROM posts WHERE id = ?', (post_id,)).fetchone()
-    conn.close()
-    if post is None:
-        abort(404)
-    return post
+    first_names = [x['name'] for x in conn.execute('SELECT name FROM names WHERE category = "first_name"').fetchall()]
+    nicknames = [x['name'] for x in conn.execute('SELECT name FROM names WHERE category = "nickname"').fetchall()]
+    last_names = [x['name'] for x in conn.execute('SELECT name FROM names WHERE category = "last_name"').fetchall()]
+    ##Formats
+    # first "nickname" last
+    # first "nickname" last_long
+    # nickname last
+    # nickname last_long  
+    # first_old last  
+    # first_old last_long 
+    # first_old "nickname" last
+    name = random.choice(first_names)+' "'+random.choice(nicknames)+'" '+random.choice(last_names)
+    return name
+
+def generate_name(first:str, last:str) -> str:
+    #remove whitespace and lower
+    seed_string = (first.strip() + last.strip()).lower()
+    if seed_string == 'lorelaigilmore':
+        return 'Pennilyn Lott'
+    if len(seed_string) == 0:
+         return ''   
+    return GenerateRandomFemaleName(seed_string)
 
 app = Flask(__name__, template_folder='webpages')
 with open('./secrets/sample.credentials.json') as f:
     credentials = json.load(f)
 app.config['SECRET_KEY'] = credentials['sample_key']
 
-@app.route('/')
+@app.route('/', methods=('GET', 'POST'))
 def index():
-    conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts').fetchall()
-    conn.close()
-    return render_template('index.html', posts=posts)
-
-@app.route('/<int:post_id>')
-def post(post_id):
-    post = get_post(post_id)
-    return render_template('post.html', post=post)
-
-@app.route('/create', methods=('GET', 'POST'))
-def create():
+    mommy_name = ''
     if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
+        mommy_name = generate_name(request.form['first_name'],request.form['last_name'])
+    return render_template('index.html', name=mommy_name)
 
-        if not title:
-            flash('Title is required!')
-        else:
-            conn = get_db_connection()
-            conn.execute('INSERT INTO posts (title, content) VALUES (?, ?)', (title, content))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('index'))
-        
-    return render_template('create.html')
-
-@app.route('/<int:id>/edit', methods=('GET', 'POST'))
-def edit(id):
-    post = get_post(id)
-    if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
-
-        if not title:
-            flash('Title is required!')
-        else:
-            conn = get_db_connection()
-            conn.execute('UPDATE posts SET title = ?, content = ? WHERE id = ?', (title, content, id))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('index'))
-
-    return render_template('edit.html', post=post)
-
-@app.route('/<int:id>/delete', methods=('POST',))
-def delete(id):
-    post = get_post(id)
-    conn = get_db_connection()
-    conn.execute('DELETE FROM posts WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    flash('"{}" was successfully deleted!'.format(post['title']))
-    return redirect(url_for('index'))
+if __name__ == '__main__':
+    print(GenerateRandomFemaleName("teststring"))
