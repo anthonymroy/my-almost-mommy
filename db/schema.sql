@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS names;
 
 CREATE TABLE names (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    category TEXT NOT NULL
+    seed TEXT PRIMARY KEY,
+    mom TEXT NOT NULL
 );

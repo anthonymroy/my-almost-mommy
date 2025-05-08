@@ -3,20 +3,16 @@
 {% block content %}
     <form method="post">
         <div class="form-group">
-            <label for="first_name">First Name</label>
-            <input type="text" name="first_name" size="15"
-                placeholder="Enter first name" class="form-control"
-                value="{{ request.form['first_name'] }}"></input>
-            <label for="last_name">Last Name</label>
-            <input type="text" name="last_name" size="15"
-                placeholder="Enter last name" class="form-control"
-                value="{{ request.form['last_name'] }}"></input>
+            <label for="name">Name</label>
+            <input type="text" name="name" size="15" maxlength="128"
+                placeholder="Please enter your name" class="form-control"
+                value="{{ request.form['name'] }}"></input>
         </div>
 
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Find</button>
         </div>
-        <h2>{{name}}</h2>
+        <h2>{{my_almost_mommy}}</h2>
     </form>
 {% endblock %}
 

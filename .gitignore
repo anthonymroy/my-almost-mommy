@@ -12,5 +12,10 @@ venv/
 #Except the sample one
 !sample.credentials.json
 
+# Database files
+db/database.db
+db/name_lists.py
+
+
 # Personal Scratch Folder
 scratch/
