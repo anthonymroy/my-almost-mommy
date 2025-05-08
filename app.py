@@ -111,7 +111,11 @@ def generate_random_mom(seed_name:any) -> str:
 
     return mom
 
+import os
 app = Flask(__name__, template_folder='webpages')
+current_working_directory = os.getcwd()
+print(f"The current working directory is: {current_working_directory}")
+
 with open('./secrets/sample.credentials.json') as f:
     credentials = json.load(f)
 app.config['SECRET_KEY'] = credentials['sample_key']
