@@ -38,7 +38,7 @@ def generate_first_name() -> tuple[str,int]:
         'preppy_first_name': {'names':PREPPY_FIRST_NAME + PREPPY_FIRST_OR_COMMON_LAST_NAME,'points':1},
         'preppy_preppy_first_name': {'names':PREPPY_PREPPY_FIRST_NAME + WASPY_NICKNAME,'points':2}        
     }
-    generate_vocabulary_odds(vocabulary[dict])
+    generate_vocabulary_odds(vocabulary)
     keys = list(vocabulary.keys())
     weights = [x['odds'] for x in list(vocabulary.values())]
     selected_key = random.choices(keys, weights=weights, k=1)[0]

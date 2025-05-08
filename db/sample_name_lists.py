@@ -1,51 +1,44 @@
 
 COMMON_FIRST_NAME = [
-    'Alex',
-    'Denise',
-    'George',
+    'Barbara',
+    'Dianne',
+    'Emily',
     'Julia',
     'Lisa',
     'Nicole',
-    'Sara'  
+    'Sarah'  
 ]
 
 PREPPY_FIRST_NAME = [
-    'Abby',
-    'Betsy',
-    'Edith',
+    'Ashley',
+    'Gianna',
+    'Lorelai',
     'Heather',
-    'Margo',
-    'Phoebe',
-    'Sydney'
+    'Pepper',
+    'Rory',
+    'Sherry'
 ]
 
 PREPPY_PREPPY_FIRST_NAME = [
-    'Abigail',
-    'Beatrice',
-    'Eleanor',
-    'Evelyn',
+    'Alexandria',
     'Genevieve',
-    'Harmony',
     'Josephine',
     'Mackenzie',
-    'Melody',
-    'Raelynn',
-    'Ursula'
+    'Pennilyn',
+    'Victoria'
 ]
 
 WASPY_NICKNAME = [
-    '"BeBe"',
-    '"CiCi"',
-    '"Flossy"',
-    '"Queenie"'
+    '"Cricket"',
+    '"Tipper"',
+    '"Trix"'
 ]
 
 COMMON_LAST_NAME = [
-    'Abbott',
     'Bates',
-    'Dent',
-    'Evans',
     'Fields',
+    'Jones',
+    'Lott',
     'Smith'
 ]
 
@@ -53,10 +46,8 @@ PREPPY_LAST_NAME = [
     'Butterworth',
     'Carrington',
     'Gilmore',
-    'McCourt',
     'Pennyworth',
-    'Remington'
-    'St. Germain',
+    'Tinsdale',
     'Vanderbilt',
     'Waldorf',
     'Witherspoon'
@@ -65,8 +56,6 @@ PREPPY_LAST_NAME = [
 PREPPY_FIRST_OR_COMMON_LAST_NAME = [
     'Blake',
     'Jordan',
-    'Kendall',
-    'Leighton',    
     'Piper',
     'Reagan',
     'Taylor'               
