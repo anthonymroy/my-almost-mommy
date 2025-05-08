@@ -1,4 +1,4 @@
-from db.name_lists import (COMMON_LAST_NAME, COMMON_FIRST_NAME, PREPPY_FIRST_NAME,
+from db.sample_name_lists import (COMMON_LAST_NAME, COMMON_FIRST_NAME, PREPPY_FIRST_NAME,
                            PREPPY_FIRST_OR_COMMON_LAST_NAME, PREPPY_LAST_NAME,
                            PREPPY_PREPPY_FIRST_NAME, WASPY_NICKNAME)
 from flask import Flask, render_template, request
