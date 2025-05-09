@@ -4,7 +4,7 @@ from pathlib import Path
 CWD = Path(__file__).parent.resolve()
 DATABASE_PATHFILE = CWD / './db/database.db'
 
-def initialize():
+def initialize_db():
     connection = sqlite3.connect(DATABASE_PATHFILE)
 
     with open('./db/schema.sql') as f:
@@ -19,7 +19,7 @@ def initialize():
     connection.commit()
     connection.close()
 
-def print():
+def print_db():
     connection = sqlite3.connect(DATABASE_PATHFILE)
     connection.row_factory = sqlite3.Row
     names = connection.execute('SELECT * FROM names').fetchall()
@@ -29,5 +29,5 @@ def print():
     connection.close()
 
 if __name__ == '__main__':
-    initialize()
-    print()
+    initialize_db()
+    print_db()

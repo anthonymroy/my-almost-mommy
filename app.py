@@ -21,11 +21,13 @@ def get_db_connection() -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     return conn
 
-def get_mom_from_db(seed_name:str) -> str:
+def get_mom_from_db(seed_name:str) -> str|None:
     conn = get_db_connection()
-    mommy_name = conn.execute('SELECT mom FROM names WHERE seed = ?', (seed_name,)).fetchone()
+    mom_name = conn.execute('SELECT mom FROM names WHERE seed = ?', (seed_name,)).fetchone()
     conn.close()
-    return mommy_name
+    if mom_name is not None:
+        return mom_name['mom']
+    return mom_name
 
 def generate_vocabulary_odds(vocab:dict) -> None:
     vocab_size = 0
@@ -123,12 +125,15 @@ def index():
         seed_name = request.form['name'].strip().lower()
         print(f'seed_name = {seed_name}')
         mom = get_mom_from_db(seed_name)
+        print(f'Runcheck 1 {mom}')
         if mom is None:
             mom = generate_random_mom(seed_name)
+            print(f'Runcheck 2 {mom}')
             conn = get_db_connection()
             conn.execute('INSERT INTO names (seed, mom) VALUES (?, ?)', (seed_name, mom))
             conn.commit()
             conn.close()
+    print(f'Runcheck 3 {mom}')
     return render_template('index.html', my_almost_mommy=mom)
 
 if __name__ == '__main__':
