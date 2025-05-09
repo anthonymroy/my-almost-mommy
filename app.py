@@ -1,10 +1,13 @@
-from db.sample_name_lists import (COMMON_LAST_NAME, COMMON_FIRST_NAME, PREPPY_FIRST_NAME,
+from db.name_lists import (COMMON_LAST_NAME, COMMON_FIRST_NAME, PREPPY_FIRST_NAME,
                            PREPPY_FIRST_OR_COMMON_LAST_NAME, PREPPY_LAST_NAME,
                            PREPPY_PREPPY_FIRST_NAME, WASPY_NICKNAME)
 from flask import Flask, render_template, request
-import json
+from pathlib import Path
 import random
 import sqlite3
+
+CWD = Path(__file__).parent.resolve()
+DATABASE_PATHFILE = CWD / './db/database.db'
 
 def one_in(num:int) -> bool:
 	ans = False
@@ -14,7 +17,7 @@ def one_in(num:int) -> bool:
 	return ans
 
 def get_db_connection() -> sqlite3.Connection:
-    conn = sqlite3.connect('./db/database.db')
+    conn = sqlite3.connect(DATABASE_PATHFILE)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -111,17 +114,7 @@ def generate_random_mom(seed_name:any) -> str:
 
     return mom
 
-import os
-from pathlib import Path
 app = Flask(__name__, template_folder='webpages')
-# current_working_directory = os.getcwd()
-# print(f"The current working directory is: {current_working_directory}")
-
-cwd = Path(__file__).parent.resolve()
-credentials_file = cwd / './secrets/sample.credentials.json'
-with open(credentials_file) as f:
-    credentials = json.load(f)
-app.config['SECRET_KEY'] = credentials['sample_key']
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
