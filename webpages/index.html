@@ -4,8 +4,15 @@
     <form method="post">
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" name="name" size="15" maxlength="128"
-                placeholder="Please enter your name" class="form-control"
+            <input 
+                type="text" 
+                placeholder="Please enter your name" 
+                class="form-control"
+                name="name" 
+                size="15" 
+                maxlength="50"
+                pattern="^[a-zA-Z\-\.]+$" 
+                title="Only letters, hyphens, and periods are allowed."
                 value="{{ request.form['name'] }}"></input>
         </div>
 

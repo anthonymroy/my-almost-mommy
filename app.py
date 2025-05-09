@@ -125,15 +125,13 @@ def index():
         seed_name = request.form['name'].strip().lower()
         print(f'seed_name = {seed_name}')
         mom = get_mom_from_db(seed_name)
-        print(f'Runcheck 1 {mom}')
         if mom is None:
             mom = generate_random_mom(seed_name)
-            print(f'Runcheck 2 {mom}')
             conn = get_db_connection()
             conn.execute('INSERT INTO names (seed, mom) VALUES (?, ?)', (seed_name, mom))
             conn.commit()
             conn.close()
-    print(f'Runcheck 3 {mom}')
+            
     return render_template('index.html', my_almost_mommy=mom)
 
 if __name__ == '__main__':
