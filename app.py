@@ -123,7 +123,6 @@ def index():
     mom = ''
     if request.method == 'POST':        
         seed_name = request.form['name'].strip().lower()
-        print(f'seed_name = {seed_name}')
         mom = get_mom_from_db(seed_name)
         if mom is None:
             mom = generate_random_mom(seed_name)
