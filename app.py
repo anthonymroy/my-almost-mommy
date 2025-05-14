@@ -5,6 +5,7 @@ from flask import Flask, render_template, request
 from pathlib import Path
 import random
 import sqlite3
+import string
 
 CWD = Path(__file__).parent.resolve()
 DATABASE_PATHFILE = CWD / './db/database.db'
@@ -76,7 +77,7 @@ def generate_last_name() -> tuple[str, int]:
     selected_key = random.choices(keys, weights=weights, k=1)[0]
     name = random.choice(vocabulary[selected_key]['names'])
     points = vocabulary[selected_key]['points']
-    if one_in(4):
+    if one_in(8):
         # Make hyphenated last name
         points += 1
         selected_key = random.choices(keys, weights=weights, k=1)[0]
@@ -91,7 +92,7 @@ def acceptable_name(first_name:str, middle_name:str, last_name, preppy_points:st
         return False
     if preppy_points < 2:
         return False
-    if preppy_points == 4:
+    if preppy_points == 4 or preppy_points == 5:
         return False
     return True
 
@@ -133,6 +134,18 @@ def index():
             
     return render_template('index.html', my_almost_mommy=mom)
 
+def generate_random_strings(count:int,min_length:int=5, max_length:int=32) -> list[str]:
+    viable_characters = string.ascii_letters + ' ' +'-'+'.'
+    random_strings = []
+    for _ in range(count):
+        string_length = random.randint(min_length, max_length)
+        new_string = ''.join(random.choice(viable_characters) for _ in range(string_length))
+        random_strings.append(new_string)   
+    return random_strings
+
 if __name__ == '__main__':
-    seed_str = None
-    generate_random_mom(seed_str)
+    names_to_generate = 100
+    random_seeds = generate_random_strings(names_to_generate,max_length=32)
+    print('\n')
+    for seed in random_seeds:
+        print(generate_random_mom(seed))
