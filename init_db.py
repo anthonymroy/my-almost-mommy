@@ -15,6 +15,9 @@ def initialize_db():
     cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('lorelei gilmore', 'Pennilyn Lott'))
     cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('rory gilmore', 'Sherry Tinsdale'))
     cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('april nardini', 'Lorelai Gilmore'))
+    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('lorelai', 'Pennilyn Lott'))
+    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('april', 'Lorelai Gilmore'))
+    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('rory', 'Sherry Tinsdale'))
 
     connection.commit()
     connection.close()
