@@ -1,13 +1,10 @@
 import sqlite3
-from pathlib import Path
-
-CWD = Path(__file__).parent.resolve()
-DATABASE_PATHFILE = CWD / './db/database.db'
+from utils import DATABASE_PATHFILE, print_almost_mommy_result, SQL_PATHFILE
 
 def initialize_db():
     connection = sqlite3.connect(DATABASE_PATHFILE)
 
-    with open('./db/schema.sql') as f:
+    with open(SQL_PATHFILE) as f:
         connection.executescript(f.read())
 
     cur = connection.cursor()
@@ -22,15 +19,15 @@ def initialize_db():
     connection.commit()
     connection.close()
 
-def print_db():
+def echo_db():
     connection = sqlite3.connect(DATABASE_PATHFILE)
     connection.row_factory = sqlite3.Row
     names = connection.execute('SELECT * FROM names').fetchall()
     print('My Almost Mommy Database')
     for name in names:
-        print(f"{name['seed']} ({name['mom']})")
+        print_almost_mommy_result(name['seed'], name['mom'])
     connection.close()
 
 if __name__ == '__main__':
     initialize_db()
-    print_db()
+    echo_db()

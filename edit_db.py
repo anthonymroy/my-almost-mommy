@@ -1,28 +1,19 @@
 import sqlite3
-from pathlib import Path
-
-CWD = Path(__file__).parent.resolve()
-DATABASE_PATHFILE = CWD / './db/database.db'
-
-def get_db_connection() -> sqlite3.Connection:
-    conn = sqlite3.connect(DATABASE_PATHFILE)
-    conn.row_factory = sqlite3.Row
-    return conn
+from utils import (
+    DATABASE_PATHFILE, 
+    get_db_connection, 
+    get_mom_from_db, 
+    generate_random_mom,
+    print_almost_mommy_result
+)
 
 def display_main_menu():
     print("Available Options:")
     print("A - Add entry")
     print("D - Delete entry")
     print("P - Print database")
+    print("T - Test names")
     print("Q - Quit")
-
-def get_mom_from_db(seed_name:str) -> str|None:
-    conn = get_db_connection()
-    mom_name = conn.execute('SELECT mom FROM names WHERE seed = ?', (seed_name,)).fetchone()
-    conn.close()
-    if mom_name is not None:
-        return mom_name['mom']
-    return mom_name
 
 def confirmation_dialog(message:str) -> bool:
     while True:
@@ -39,7 +30,7 @@ def add_dialog():
     seed_name = input("Enter seed name: ").lower()
     db_mom_name = get_mom_from_db(seed_name)
     if db_mom_name is not None:
-        print(f"{seed_name} -> {db_mom_name} exists")
+        print_almost_mommy_result(seed_name, db_mom_name)
         if not confirmation_dialog("Overwrite?"):
             print("Add canceled")
             return
@@ -80,8 +71,22 @@ def print_db():
     names = connection.execute('SELECT * FROM names').fetchall()
     print('My Almost Mommy Database')
     for name in names:
-        print(f"{name['seed']} ({name['mom']})")
+        print_almost_mommy_result(name['seed'], name['mom'])
     connection.close()
+
+def test_dialog():
+    while(True):
+        seed_name = input("Enter seed name (Leave blank to exit): ").lower()
+        if seed_name == '':
+            return
+        method = 'Database'
+        mom_name = get_mom_from_db(seed_name)
+        points = 'N/A'
+        if mom_name is None:
+            mom_name, points = generate_random_mom(seed_name)
+            method = 'Generated'
+        print(f'Method: {method}')
+        print_almost_mommy_result(seed_name, mom_name, points)
 
 def main():
     while True:
@@ -94,6 +99,8 @@ def main():
                 delete_dialog()
             case 'p':
                 print_db()
+            case 't':
+                test_dialog()
             case 'q':
                 break
             case _:
