@@ -77,7 +77,7 @@ def generate_last_name() -> tuple[str, int]:
     selected_key = random.choices(keys, weights=weights, k=1)[0]
     name = random.choice(vocabulary[selected_key]['names'])
     points = vocabulary[selected_key]['points']
-    if one_in(8):
+    if one_in(6):
         # Make hyphenated last name
         points += 1
         selected_key = random.choices(keys, weights=weights, k=1)[0]
@@ -88,7 +88,11 @@ def generate_last_name() -> tuple[str, int]:
     return (name, points)
 
 def acceptable_name(first_name:str, middle_name:str, last_name, preppy_points:str) -> bool:
-    if first_name == middle_name or first_name in last_name or middle_name in last_name:
+    if (
+        first_name == middle_name or 
+        first_name in last_name or
+        (middle_name in last_name and middle_name != '')
+    ):        
         return False
     if preppy_points < 2:
         return False
