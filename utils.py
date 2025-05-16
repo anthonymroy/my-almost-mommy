@@ -131,7 +131,7 @@ def generate_middle_name() -> tuple[str,int]:
         A tuple containing the randomly selected first name (str) and its
         corresponding point value (int).
     """
-    if one_in(4, False):
+    if one_in(8, False):
         return ('',0) #No middle name
     vocabulary = {
         'preppy_last_name': {'names':PREPPY_FIRST_OR_COMMON_LAST_NAME,'points':1},
@@ -162,7 +162,7 @@ def generate_last_name() -> tuple[str, int]:
     selected_key = random.choices(keys, weights=weights, k=1)[0]
     name = random.choice(vocabulary[selected_key]['names'])
     points = vocabulary[selected_key]['points']
-    if one_in(8):
+    if one_in(8, True):
         # Make hyphenated last name
         points += 1
         selected_key = random.choices(keys, weights=weights, k=1)[0]
