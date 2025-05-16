@@ -26,6 +26,17 @@ def index():
     return render_template('index.html', my_almost_mommy=mom)
 
 def generate_random_strings(count:int,min_length:int=5, max_length:int=32) -> list[str]:
+    """
+    Generates a list of random strings 
+
+    Args:
+        count: The number of random strings to generate.
+        min_length: The minimum length of each generated string (default: 5).
+        max_length: The maximum length of each generated string (default: 32).
+
+    Returns:
+        A list containing the random generated strings.
+    """
     viable_characters = string.ascii_letters + ' ' +'-'+'.'
     random_strings = []
     for _ in range(count):

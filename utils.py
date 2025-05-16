@@ -1,6 +1,7 @@
 from db.name_lists import (COMMON_LAST_NAME, COMMON_FIRST_NAME, PREPPY_FIRST_NAME,
                            PREPPY_FIRST_OR_COMMON_LAST_NAME, PREPPY_LAST_NAME,
                            PREPPY_PREPPY_FIRST_NAME, WASPY_NICKNAME)
+from Levenshtein import distance as lev_dist
 from pathlib import Path
 import random
 import sqlite3
@@ -130,9 +131,8 @@ def generate_middle_name() -> tuple[str,int]:
         A tuple containing the randomly selected first name (str) and its
         corresponding point value (int).
     """
-    if one_in(2):
-        # Half the time, return nothing
-        return ('',0)
+    if one_in(4, False):
+        return ('',0) #No middle name
     vocabulary = {
         'preppy_last_name': {'names':PREPPY_FIRST_OR_COMMON_LAST_NAME,'points':1},
         'preppy_preppy_first_name': {'names':PREPPY_PREPPY_FIRST_NAME + WASPY_NICKNAME,'points':2}
@@ -162,7 +162,7 @@ def generate_last_name() -> tuple[str, int]:
     selected_key = random.choices(keys, weights=weights, k=1)[0]
     name = random.choice(vocabulary[selected_key]['names'])
     points = vocabulary[selected_key]['points']
-    if one_in(6):
+    if one_in(8):
         # Make hyphenated last name
         points += 1
         selected_key = random.choices(keys, weights=weights, k=1)[0]
@@ -172,13 +172,29 @@ def generate_last_name() -> tuple[str, int]:
             points += vocabulary[selected_key]['points']
     return (name, points)
 
+def levenshtein_difference(string1:str, string2:str) -> float:
+    """
+    Determines the Levenshtein distance of two strings normalized by the length of the longest
+    string.
+
+    Returns:
+        Float between [0,1] inclusive where 0 means the strings are identical ans 1 means the
+        strings are as different as they can be
+    """
+    if (string1 is None) ^ (string2 is None): #XOR
+        return 1.0
+    if (string1 is None) and (string2 is None):
+        return 0.0
+    distance = lev_dist(string1, string2)
+    norm = max(len(string1),len(string2))
+    return float(distance)/ norm
+
 def acceptable_name(first_name:str, middle_name:str, last_name:str, preppy_points:str) -> bool:
     """
     Determines if a generated full name is considered "acceptable" based on certain criteria.
 
-    The criteria include checking for identical first and middle names,
-    whether the first or middle name appears within the last name, and a
-    minimum required 'preppy_points' value.
+    The criteria include checking for similarity between the first, middle, and last names,
+    and a minimum required 'preppy_points' value.
 
     Args:
         first_name: The generated first name (string).
@@ -190,21 +206,22 @@ def acceptable_name(first_name:str, middle_name:str, last_name:str, preppy_point
     Returns:
         True if the name meets all the acceptability criteria, False otherwise.
     """
-    if (
-        first_name == middle_name or 
-        first_name in last_name or
-        (middle_name in last_name and middle_name != '')
-    ):        
-        return False
     if preppy_points < 2:
         return False
+    if levenshtein_difference(first_name, middle_name) < 0.5:
+        return False
+    last_names = last_name.split('-')
+    for name in last_names:        
+        if (levenshtein_difference(first_name, name) < 0.5 or 
+            levenshtein_difference(middle_name, name) < 0.5):
+            return False
     return True
 
 def generate_random_mom(seed_name:any) -> tuple[str,int]:
     """
     Generates a random "mom" name (first, middle, last) and its associated
     total "preppy points" based on a given seed.
-    
+
     Args:
         seed_name: An arbitrary value used to seed the random number generator.
                    This ensures that the same seed will produce the same sequence
