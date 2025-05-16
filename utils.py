@@ -9,28 +9,70 @@ CWD = Path(__file__).parent.resolve()
 DATABASE_PATHFILE = CWD / './db/database.db'
 SQL_PATHFILE = CWD / './db/schema.sql'
 
-def one_in(num:int) -> bool:
-	ans = False
-	dice = range(num)
-	if random.choice(dice) == 0:
-		ans = True
-	return ans
+def one_in(num:int, return_value:bool=True) -> bool:
+    """
+    Has a 1:num chance of returning a specified boolean value. 
 
-def print_almost_mommy_result(seed_name:str, mom_name:str, points:int|str=None):
+    Args:
+    num: An integer representing the denominator of the probability (1/num).
+            It defines the upper bound (exclusive) of the range from which a
+            random number is chosen.
+    return_value: A boolean value to return when the random choice is 0.
+                    Defaults to True.
+
+    Returns:
+        True with a probability of 1/num (if return_value is True),
+        or False with a probability of 1/num (if return_value is False).
+        Returns the opposite of 'return_value' with a probability of (num-1)/num.
+    """
+    ans = not return_value
+    dice = range(num)
+    if random.choice(dice) == 0:
+        ans = return_value
+    return ans
+
+def print_almost_mommy_result(seed_name:str, mom_name:str, points:int|str=None) -> None:
+    """
+    Prints a formatted string indicating a relationship between two names,
+    optionally including a point value.
+
+    Args:
+        seed_name: The name of the 'seed'.
+        mom_name: The name of the 'mom'.
+        points: An optional integer or string representing points associated with the relationship.
+                If None or an empty string (''), the points are not included in the output.
+                Defaults to None.
+
+    Returns:
+        None.
+    """
     if points is None:
         print(f'{seed_name} -> {mom_name}')
         return
     if points == '':
         print(f'{seed_name} -> {mom_name}')
         return
-    print(f'{seed_name} -> {mom_name} Points: {points}') 
+    print(f'{seed_name} -> {mom_name} ({points} points)') 
 
 def get_db_connection() -> sqlite3.Connection:
+    """
+    Establishes and returns a connection to an SQLite database.
+    """
     conn = sqlite3.connect(DATABASE_PATHFILE)
     conn.row_factory = sqlite3.Row
     return conn
 
 def get_mom_from_db(seed_name:str) -> str|None:
+    """
+    Retrieves the 'mom' name associated with a given 'seed' name from the database.
+
+    Args:
+        seed_name: The 'seed' name to search for in the database.
+
+    Returns:
+        The 'mom' name (as a string) if a matching 'seed' is found, otherwise None.
+    """
+
     conn = get_db_connection()
     mom_name = conn.execute('SELECT mom FROM names WHERE seed = ?', (seed_name,)).fetchone()
     conn.close()
@@ -39,6 +81,20 @@ def get_mom_from_db(seed_name:str) -> str|None:
     return mom_name
 
 def generate_vocabulary_odds(vocab:dict) -> None:
+    """
+    Calculates and adds the probability of each category in the vocabulary dictionary.
+
+    Args:
+        vocab: A dictionary where keys represent categories and values are
+               dictionaries containing a list of 'names'. For example:
+               {
+                   'category1': {'names': ['name_a', 'name_b']},
+                   'category2': {'names': ['name_c']}
+               }
+
+    Returns:
+        None. This function modifies the input dictionary directly.
+    """
     vocab_size = 0
     for key in vocab.keys():
         vocab_size += len(vocab[key]['names'])
@@ -47,6 +103,13 @@ def generate_vocabulary_odds(vocab:dict) -> None:
         vocab[key]['odds'] = float(len(vocab[key]['names'])) / vocab_size
 
 def generate_first_name() -> tuple[str,int]:
+    """
+    Generates a name and its associated point value based on a weighted vocabulary.
+
+    Returns:
+        A tuple containing the randomly selected first name (str) and its
+        corresponding point value (int).
+    """
     vocabulary = {
         'common_first_name': {'names':COMMON_FIRST_NAME,'points':0},
         'preppy_first_name': {'names':PREPPY_FIRST_NAME + PREPPY_FIRST_OR_COMMON_LAST_NAME,'points':1},
@@ -60,6 +123,13 @@ def generate_first_name() -> tuple[str,int]:
     return (name, vocabulary[selected_key]['points'])
     
 def generate_middle_name() -> tuple[str,int]:
+    """
+    Generates a name and its associated point value based on a weighted vocabulary.
+
+    Returns:
+        A tuple containing the randomly selected first name (str) and its
+        corresponding point value (int).
+    """
     if one_in(2):
         # Half the time, return nothing
         return ('',0)
@@ -75,6 +145,13 @@ def generate_middle_name() -> tuple[str,int]:
     return (name, vocabulary[selected_key]['points'])
 
 def generate_last_name() -> tuple[str, int]:
+    """
+    Generates a name and its associated point value based on a weighted vocabulary.
+
+    Returns:
+        A tuple containing the randomly selected first name (str) and its
+        corresponding point value (int).
+    """
     vocabulary = {
         'common_last_name': {'names':COMMON_LAST_NAME+PREPPY_FIRST_OR_COMMON_LAST_NAME,'points':0},        
         'preppy_last_name': {'names':PREPPY_LAST_NAME,'points':1}
@@ -95,7 +172,24 @@ def generate_last_name() -> tuple[str, int]:
             points += vocabulary[selected_key]['points']
     return (name, points)
 
-def acceptable_name(first_name:str, middle_name:str, last_name, preppy_points:str) -> bool:
+def acceptable_name(first_name:str, middle_name:str, last_name:str, preppy_points:str) -> bool:
+    """
+    Determines if a generated full name is considered "acceptable" based on certain criteria.
+
+    The criteria include checking for identical first and middle names,
+    whether the first or middle name appears within the last name, and a
+    minimum required 'preppy_points' value.
+
+    Args:
+        first_name: The generated first name (string).
+        middle_name: The generated middle name (string).
+        last_name: The generated last name (string).
+        preppy_points: An integer representing the accumulated "preppy points"
+                       associated with the generated names.
+
+    Returns:
+        True if the name meets all the acceptability criteria, False otherwise.
+    """
     if (
         first_name == middle_name or 
         first_name in last_name or
@@ -107,6 +201,19 @@ def acceptable_name(first_name:str, middle_name:str, last_name, preppy_points:st
     return True
 
 def generate_random_mom(seed_name:any) -> tuple[str,int]:
+    """
+    Generates a random "mom" name (first, middle, last) and its associated
+    total "preppy points" based on a given seed.
+    
+    Args:
+        seed_name: An arbitrary value used to seed the random number generator.
+                   This ensures that the same seed will produce the same sequence
+                   of generated names.
+
+    Returns:
+        A tuple containing the generated full "mom" name (string) and the
+        total accumulated "preppy points" (integer) for that name.
+    """
     random.seed(seed_name)      
     while True:
         preppy_points = 0

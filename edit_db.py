@@ -108,4 +108,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    print(f'End: {__file__}')
+    print(f'Ending program')
