@@ -1,19 +1,18 @@
-import sqlite3
-from utils import (
-    DATABASE_PATHFILE, 
+from utils import (     
     get_db_connection, 
     get_mom_from_db, 
     generate_random_mom,
+    generate_random_strings,
     print_almost_mommy_result
 )
 
 def display_main_menu():
-    print("Available Options:")
+    print("Available Options (Leave blank to exit):")
     print("A - Add entry")
     print("D - Delete entry")
     print("P - Print database")
-    print("T - Test names")
-    print("Q - Quit")
+    print("T - Test single name")
+    print("Z - Test a list of names")
 
 def confirmation_dialog(message:str) -> bool:
     while True:
@@ -66,15 +65,14 @@ def delete_dialog():
         return
 
 def print_db():
-    connection = sqlite3.connect(DATABASE_PATHFILE)
-    connection.row_factory = sqlite3.Row
+    connection = get_db_connection()
     names = connection.execute('SELECT * FROM names').fetchall()
     print('My Almost Mommy Database')
     for name in names:
         print_almost_mommy_result(name['seed'], name['mom'])
     connection.close()
 
-def test_dialog():
+def test_single_dialog():
     while(True):
         seed_name = input("Enter seed name (Leave blank to exit): ").lower()
         if seed_name == '':
@@ -88,11 +86,30 @@ def test_dialog():
         print(f'Method: {method}')
         print_almost_mommy_result(seed_name, mom_name, points)
 
+def test_list_dialog():
+    while(True):
+        text = input("How many random names to generate? (Leave blank to exit): ")
+        if text == '':
+            return
+        try:
+            number = int(text)
+        except ValueError:
+            print(f'Unable to parse "{text} as an int"')
+            continue
+
+        random_seeds = generate_random_strings(number)
+        print('\n')
+        for seed in random_seeds:
+            mom,points = generate_random_mom(seed)
+            print_almost_mommy_result('', mom, points)
+
 def main():
     while True:
         display_main_menu()
         choice = input("Choose option to edit database: ")
-        match choice.lower():
+        if choice == '': 
+            break
+        match choice.lower()[0]:
             case 'a':
                 add_dialog()
             case 'd':
@@ -100,9 +117,9 @@ def main():
             case 'p':
                 print_db()
             case 't':
-                test_dialog()
-            case 'q':
-                break
+                test_single_dialog()
+            case 'z':
+                test_list_dialog()            
             case _:
                 print(f'Unable to parse "{choice}".')    
 

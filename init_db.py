@@ -1,9 +1,7 @@
-import sqlite3
-from utils import DATABASE_PATHFILE, print_almost_mommy_result, SQL_PATHFILE
+from utils import get_db_connection, print_almost_mommy_result, SQL_PATHFILE
 
 def initialize_db():
-    connection = sqlite3.connect(DATABASE_PATHFILE)
-
+    connection = get_db_connection()
     with open(SQL_PATHFILE) as f:
         connection.executescript(f.read())
 
@@ -20,8 +18,7 @@ def initialize_db():
     connection.close()
 
 def echo_db():
-    connection = sqlite3.connect(DATABASE_PATHFILE)
-    connection.row_factory = sqlite3.Row
+    connection = get_db_connection()
     names = connection.execute('SELECT * FROM names').fetchall()
     print('My Almost Mommy Database')
     for name in names:

@@ -1,10 +1,9 @@
 from flask import Flask, render_template, request
-import random
-import string
 from utils import (
     get_mom_from_db,
     generate_random_mom,
     get_db_connection,
+    generate_random_strings,
     print_almost_mommy_result
 )
 
@@ -24,26 +23,6 @@ def index():
             conn.close()
             
     return render_template('index.html', my_almost_mommy=mom)
-
-def generate_random_strings(count:int,min_length:int=5, max_length:int=32) -> list[str]:
-    """
-    Generates a list of random strings 
-
-    Args:
-        count: The number of random strings to generate.
-        min_length: The minimum length of each generated string (default: 5).
-        max_length: The maximum length of each generated string (default: 32).
-
-    Returns:
-        A list containing the random generated strings.
-    """
-    viable_characters = string.ascii_letters + ' ' +'-'+'.'
-    random_strings = []
-    for _ in range(count):
-        string_length = random.randint(min_length, max_length)
-        new_string = ''.join(random.choice(viable_characters) for _ in range(string_length))
-        random_strings.append(new_string)   
-    return random_strings
 
 if __name__ == '__main__':
     names_to_generate = 100
