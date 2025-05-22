@@ -7,7 +7,7 @@ from utils import (
 )
 
 def display_main_menu():
-    print("Available Options (Leave blank to exit):")
+    print("--- MAIN MENU ---")
     print("A - Add entry")
     print("D - Delete entry")
     print("P - Print database")
@@ -26,6 +26,7 @@ def confirmation_dialog(message:str) -> bool:
                 print(f'Unable to parse "{choice}".')
 
 def add_dialog():
+    print("--- ADD DIALOG ---")
     seed_name = input("Enter seed name: ").lower()
     db_mom_name = get_mom_from_db(seed_name)
     if db_mom_name is not None:
@@ -48,6 +49,7 @@ def add_dialog():
         return
     
 def delete_dialog():
+    print("--- DELETE DIALOG ---")
     seed_name = input("Enter seed name to delete: ").lower()
     mom_name = get_mom_from_db(seed_name)
     if mom_name is None:
@@ -74,6 +76,7 @@ def print_db():
 
 def test_single_dialog():
     while(True):
+        print("--- TEST DIALOG ---")
         seed_name = input("Enter seed name (Leave blank to exit): ").lower()
         if seed_name == '':
             return
@@ -88,6 +91,7 @@ def test_single_dialog():
 
 def test_list_dialog():
     while(True):
+        print("--- TEST DIALOG ---")
         text = input("How many random names to generate? (Leave blank to exit): ")
         if text == '':
             return
@@ -106,7 +110,7 @@ def test_list_dialog():
 def main():
     while True:
         display_main_menu()
-        choice = input("Choose option to edit database: ")
+        choice = input("Please choose an option (Leave blank to exit program): ")
         if choice == '': 
             break
         match choice.lower()[0]:
@@ -125,4 +129,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    print(f'Ending program')
+    print(f'Program ended')
