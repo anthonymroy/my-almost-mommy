@@ -1,7 +1,0 @@
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore
-
-# And a sample portrait
-!0dfba00c-d173-405b-9857-e72ed275f18a.jpg
