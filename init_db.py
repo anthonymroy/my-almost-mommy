@@ -6,23 +6,23 @@ def initialize_db():
         connection.executescript(f.read())
 
     cur = connection.cursor()
-    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('lorelai gilmore', 'Pennilyn Lott'))
-    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('lorelei gilmore', 'Pennilyn Lott'))
-    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('rory gilmore', 'Sherry Tinsdale'))
-    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('april nardini', 'Lorelai Gilmore'))
-    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('lorelai', 'Pennilyn Lott'))
-    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('april', 'Lorelai Gilmore'))
-    cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",('rory', 'Sherry Tinsdale'))
+    cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",('lorelai gilmore', 'Pennilyn Lott','pennilyn-lott.jpg'))
+    cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",('lorelei gilmore', 'Pennilyn Lott','pennilyn-lott.jpg'))
+    cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",('rory gilmore', 'Sherry Tinsdale','sherry-tinsdale.jpg'))
+    cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",('april nardini', 'Lorelai Gilmore','lorelai-gilmore.jpg'))
+    cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",('lorelai', 'Pennilyn Lott','pennilyn-lott.jpg'))
+    cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",('april', 'Lorelai Gilmore','lorelai-gilmore.jpg'))
+    cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",('rory', 'Sherry Tinsdale','sherry-tinsdale.jpg'))
 
     connection.commit()
     connection.close()
 
 def echo_db():
     connection = get_db_connection()
-    names = connection.execute('SELECT * FROM names').fetchall()
+    moms = connection.execute('SELECT * FROM moms').fetchall()
     print('My Almost Mommy Database')
-    for name in names:
-        print_almost_mommy_result(name['seed'], name['mom'])
+    for mom in moms:
+        print_almost_mommy_result(mom['seed'], mom['name'], image_filename=mom['image'])
     connection.close()
 
 if __name__ == '__main__':

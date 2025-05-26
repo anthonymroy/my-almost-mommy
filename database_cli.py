@@ -39,9 +39,9 @@ def add_dialog():
         conn = get_db_connection()
         cur = conn.cursor()
         if db_mom_name is None:
-            cur.execute("INSERT INTO names (seed, mom) VALUES (?, ?)",(seed_name, mom_name))
+            cur.execute("INSERT INTO moms (seed, name) VALUES (?, ?)",(seed_name, mom_name))
         else:
-            cur.execute("UPDATE names SET mom = ? WHERE seed = ?",(mom_name,seed_name))
+            cur.execute("UPDATE moms SET name = ? WHERE seed = ?",(mom_name,seed_name))
         conn.commit()
         conn.close()
     else:
@@ -68,10 +68,10 @@ def delete_dialog():
 
 def print_db():
     connection = get_db_connection()
-    names = connection.execute('SELECT * FROM names').fetchall()
+    moms = connection.execute('SELECT * FROM moms').fetchall()
     print('My Almost Mommy Database')
-    for name in names:
-        print_almost_mommy_result(name['seed'], name['mom'])
+    for mom in moms:
+        print_almost_mommy_result(mom['seed'], mom['name'], image_filename=mom['image'])
     connection.close()
 
 def test_single_dialog():
@@ -84,7 +84,7 @@ def test_single_dialog():
         mom_name = get_mom_from_db(seed_name)
         points = 'N/A'
         if mom_name is None:
-            mom_name, points = generate_random_mom(seed_name)
+            mom_name,points, _ = generate_random_mom(seed_name)
             method = 'Generated'
         print(f'Method: {method}')
         print_almost_mommy_result(seed_name, mom_name, points)
@@ -104,7 +104,7 @@ def test_list_dialog():
         random_seeds = generate_random_strings(number)
         print('\n')
         for seed in random_seeds:
-            mom,points = generate_random_mom(seed)
+            mom,points,_ = generate_random_mom(seed)
             print_almost_mommy_result('', mom, points)
 
 def main():

@@ -2,6 +2,7 @@ from db.name_lists import (COMMON_LAST_NAME, COMMON_FIRST_NAME, PREPPY_FIRST_NAM
                            PREPPY_FIRST_OR_COMMON_LAST_NAME, PREPPY_LAST_NAME,
                            PREPPY_PREPPY_FIRST_NAME, WASPY_NICKNAME)
 from Levenshtein import distance as lev_dist
+import os
 from pathlib import Path
 import random
 import string
@@ -10,6 +11,8 @@ import sqlite3
 CWD = Path(__file__).parent.resolve()
 DATABASE_PATHFILE = CWD / './db/database.db'
 SQL_PATHFILE = CWD / './db/schema.sql'
+SPLASH_DIRECTORY = CWD / './static/images/splash/'
+PORTRAIT_DIRECTORY = CWD / './static/images/portraits/'
 
 def one_in(num:int, return_value:bool=True) -> bool:
     """
@@ -33,7 +36,7 @@ def one_in(num:int, return_value:bool=True) -> bool:
         ans = return_value
     return ans
 
-def print_almost_mommy_result(seed_name:str, mom_name:str, points:int|str=None) -> None:
+def print_almost_mommy_result(seed_name:str, mom_name:str, points:int|str=None, image_filename:str=None) -> None:
     """
     Prints a formatted string indicating a relationship between two names,
     optionally including a point value.
@@ -44,17 +47,18 @@ def print_almost_mommy_result(seed_name:str, mom_name:str, points:int|str=None) 
         points: An optional integer or string representing points associated with the relationship.
                 If None or an empty string (''), the points are not included in the output.
                 Defaults to None.
+        image_filename: An optional filename of the associated image
 
     Returns:
         None.
     """
     if points is None:
-        print(f'{seed_name} -> {mom_name}')
+        print(f'{seed_name} -> {mom_name} @ {image_filename}')
         return
     if points == '':
-        print(f'{seed_name} -> {mom_name}')
+        print(f'{seed_name} -> {mom_name} @ {image_filename}')
         return
-    print(f'{seed_name} -> {mom_name} ({points} points)') 
+    print(f'{seed_name} -> {mom_name} ({points} points) @ {image_filename}') 
 
 def get_db_connection() -> sqlite3.Connection:
     """
@@ -64,7 +68,7 @@ def get_db_connection() -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     return conn
 
-def get_mom_from_db(seed_name:str) -> str|None:
+def get_mom_from_db(seed_name:str) -> tuple[str,str]|None:
     """
     Retrieves the 'mom' name associated with a given 'seed' name from the database.
 
@@ -76,11 +80,11 @@ def get_mom_from_db(seed_name:str) -> str|None:
     """
 
     conn = get_db_connection()
-    mom_name = conn.execute('SELECT mom FROM names WHERE seed = ?', (seed_name,)).fetchone()
+    mom = conn.execute('SELECT * FROM moms WHERE seed = ?', (seed_name,)).fetchone()
     conn.close()
-    if mom_name is not None:
-        return mom_name['mom']
-    return mom_name
+    if mom is not None:
+        return mom['name'], mom['image']
+    return None,None
 
 def generate_vocabulary_odds(vocab:dict) -> None:
     """
@@ -218,7 +222,7 @@ def acceptable_name(first_name:str, middle_name:str, last_name:str, preppy_point
             return False
     return True
 
-def generate_random_mom(seed_name:any) -> tuple[str,int]:
+def generate_random_mom(seed_name:any) -> tuple[str,int,str]:
     """
     Generates a random "mom" name (first, middle, last) and its associated
     total "preppy points" based on a given seed.
@@ -229,8 +233,9 @@ def generate_random_mom(seed_name:any) -> tuple[str,int]:
                    of generated names.
 
     Returns:
-        A tuple containing the generated full "mom" name (string) and the
-        total accumulated "preppy points" (integer) for that name.
+        A tuple containing the generated full "mom" name (string), the
+        total accumulated "preppy points" (integer) for that name, and
+        a filename for a "mom" image.
     """
     random.seed(seed_name)      
     while True:
@@ -250,7 +255,24 @@ def generate_random_mom(seed_name:any) -> tuple[str,int]:
     mom = first_name+' '+middle_name+' '+last_name
     mom = mom.replace('  ',' ')
 
-    return mom, preppy_points
+    image_filename = None
+    image_directory = PORTRAIT_DIRECTORY
+    image_filenames = []
+    try:
+        image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg')  
+        all_entries = os.listdir(image_directory)
+        for entry in all_entries:
+            full_path = os.path.join(image_directory, entry)
+            # Check if the entry is a file
+            if os.path.isfile(full_path) and entry.lower().endswith(image_extensions):
+                image_filenames.append(entry)
+    except FileNotFoundError:
+        print(f"Error: Directory '{image_directory}' not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    image_filename = random.choice(image_filenames)   
+    
+    return mom, preppy_points, image_filename
 
 def generate_random_strings(count:int,min_length:int=5, max_length:int=32) -> list[str]:
     """
