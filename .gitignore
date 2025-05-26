@@ -7,15 +7,9 @@ __pycache__/
 .venv
 venv/
 
-# Ignore all credential files
-*.credentials.json
-#Except the sample one
-!sample.credentials.json
-
-# Database files
-db/database.py
-db/name_lists.py
-
+# VS Code settings #
+####################
+.vscode/
 
 # Personal Scratch Folder
 scratch/

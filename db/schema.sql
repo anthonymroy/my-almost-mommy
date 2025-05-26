@@ -1,6 +1,7 @@
-DROP TABLE IF EXISTS names;
+DROP TABLE IF EXISTS moms;
 
-CREATE TABLE names (
+CREATE TABLE moms (
     seed TEXT PRIMARY KEY,
-    mom TEXT NOT NULL
+    name TEXT NOT NULL,
+    image TEXT NULL
 );

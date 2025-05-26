@@ -1,33 +1,56 @@
 from flask import Flask, render_template, request
+import os
 from utils import (
-    get_mom_from_db,
-    generate_random_mom,
-    get_db_connection,
+    get_verified_image_directory,
+    generate_random_mom_name,
+    get_or_generate_name,
+    get_or_generate_image_filename,
     generate_random_strings,
-    print_almost_mommy_result
+    print_almost_mommy_result,
+    upsert_mom
 )
 
-app = Flask(__name__, template_folder='webpages')
+app = Flask(__name__)
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
-    mom = ''
+    name = ''
+    img_filepath = ''
     if request.method == 'POST':        
-        seed_name = request.form['name'].strip().lower()
-        mom = get_mom_from_db(seed_name)
-        if mom is None:
-            mom,_ = generate_random_mom(seed_name)
-            conn = get_db_connection()
-            conn.execute('INSERT INTO names (seed, mom) VALUES (?, ?)', (seed_name, mom))
-            conn.commit()
-            conn.close()
-            
-    return render_template('index.html', my_almost_mommy=mom)
+        seed = request.form['name'].strip().lower()
+        print(f'seed = {seed}')
+        name = get_or_generate_name(seed)
+        if name is None:
+            name = ''
+        img_filename = get_or_generate_image_filename(seed)
+        img_directory = get_verified_image_directory(img_filename)
+        try:
+            img_filepath = os.path.join(img_directory,img_filename).replace("\\","/")
+        except TypeError:
+            img_filepath = ''
+        if len(name) > 0:
+            upsert_mom(seed, name, img_filename)
+
+    # print(f'name = {name}') 
+    # print(f'img_filepath = {img_filepath}')        
+    return render_template(
+        'index.html',
+        my_almost_mommy_name=name,
+        my_almost_mommy_img=img_filepath
+    )
+
+@app.route('/about')
+def about():     
+    return render_template('about.html')
+
+@app.route('/contact')
+def contact():     
+    return render_template('contact.html')
 
 if __name__ == '__main__':
     names_to_generate = 100
     random_seeds = generate_random_strings(names_to_generate)
     print('\n')
     for seed in random_seeds:
-        mom,points = generate_random_mom(seed)
+        mom,points = generate_random_mom_name(seed)
         print_almost_mommy_result(seed, mom, points)
