@@ -2,7 +2,7 @@ import os
 import uuid
 
 def main():
-    image_directory = './static/images/portraits'
+    image_directory = './static/images/staging'
     try:
         image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg')  
         old_filenames = os.listdir(image_directory)

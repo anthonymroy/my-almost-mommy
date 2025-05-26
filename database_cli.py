@@ -1,9 +1,11 @@
+import os
 from utils import (     
     get_db_connection, 
     get_mom_from_db, 
-    generate_random_mom,
+    generate_random_mom_name,
     generate_random_strings,
-    print_almost_mommy_result
+    print_almost_mommy_result,
+    upsert_mom
 )
 
 def display_main_menu():
@@ -28,22 +30,26 @@ def confirmation_dialog(message:str) -> bool:
 def add_dialog():
     print("--- ADD DIALOG ---")
     seed_name = input("Enter seed name: ").lower()
-    db_mom_name = get_mom_from_db(seed_name)
+    db_mom_name, db_img_file = get_mom_from_db(seed_name)
     if db_mom_name is not None:
-        print_almost_mommy_result(seed_name, db_mom_name)
+        print_almost_mommy_result(seed_name, db_mom_name, image_filename=db_img_file)
         if not confirmation_dialog("Overwrite?"):
             print("Add canceled")
             return
     mom_name = input("Enter new mom name: ")
-    if confirmation_dialog(f"Add {seed_name} -> {mom_name}?"):
-        conn = get_db_connection()
-        cur = conn.cursor()
-        if db_mom_name is None:
-            cur.execute("INSERT INTO moms (seed, name) VALUES (?, ?)",(seed_name, mom_name))
-        else:
-            cur.execute("UPDATE moms SET name = ? WHERE seed = ?",(mom_name,seed_name))
-        conn.commit()
-        conn.close()
+    image_filename = ""
+    if confirmation_dialog(f"Add image?"):
+        image_filename = input("Enter image filename: ")
+    if confirmation_dialog(f"Add {seed_name} -> {mom_name} @ {image_filename}?"):
+        upsert_mom(seed_name, mom_name, image_filename)
+        # conn = get_db_connection()
+        # cur = conn.cursor()
+        # if db_mom_name is None:
+        #     cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",(seed_name, mom_name, image_filename))
+        # else:
+        #     cur.execute("UPDATE moms SET name = ?, image = ? WHERE seed = ?",(mom_name,image_filename,seed_name))
+        # conn.commit()
+        # conn.close()
     else:
         print("Add canceled")
         return
@@ -51,15 +57,15 @@ def add_dialog():
 def delete_dialog():
     print("--- DELETE DIALOG ---")
     seed_name = input("Enter seed name to delete: ").lower()
-    mom_name = get_mom_from_db(seed_name)
+    mom_name, mom_image = get_mom_from_db(seed_name)
     if mom_name is None:
         print(f"{seed_name} is not in database.")
         print("Delete canceled")
         return    
-    if confirmation_dialog(f"Delete {seed_name} -> {mom_name}?"):
+    if confirmation_dialog(f"Delete {seed_name} -> {mom_name} @ {mom_image}?"):
         conn = get_db_connection()
         cur = conn.cursor()        
-        cur.execute("DELETE FROM names WHERE seed = ?",(seed_name,))        
+        cur.execute("DELETE FROM moms WHERE seed = ?",(seed_name,))        
         conn.commit()
         conn.close()
     else:
@@ -81,10 +87,10 @@ def test_single_dialog():
         if seed_name == '':
             return
         method = 'Database'
-        mom_name = get_mom_from_db(seed_name)
+        mom_name,_ = get_mom_from_db(seed_name)
         points = 'N/A'
         if mom_name is None:
-            mom_name,points, _ = generate_random_mom(seed_name)
+            mom_name,points = generate_random_mom_name(seed_name)
             method = 'Generated'
         print(f'Method: {method}')
         print_almost_mommy_result(seed_name, mom_name, points)
@@ -104,7 +110,7 @@ def test_list_dialog():
         random_seeds = generate_random_strings(number)
         print('\n')
         for seed in random_seeds:
-            mom,points,_ = generate_random_mom(seed)
+            mom,points = generate_random_mom_name(seed)
             print_almost_mommy_result('', mom, points)
 
 def main():

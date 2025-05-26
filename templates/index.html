@@ -1,31 +1,95 @@
 {% extends 'base.html' %}
 
-{% block content %}
-    <form method="post">
-        <p>MyAlmostMommy.com was created by the confluence of two aspects
-            of 2000's pop culture; The Wu-Tang Name Generator that gave Donald Glover
-             the name Childish Gambino, and a particularly cringy piece of 
-             dialogue from Gilmore Girls where Lorelai Gilmore refers to 
-             her father’s former paramour as “my almost Mommy.” So now you 
-             can find out which of your father’s ex-girlfriends is attending
-              the Harvard-Yale football game!<p>
-        <div class="form-group">
-            <input 
-                type="text" 
-                placeholder="Please enter your name" 
-                class="form-control"
-                name="name" 
-                size="15" 
-                maxlength="50"
-                pattern="^[a-zA-Z\-\. ]+$" 
-                title="Only letters, spaces, hyphens, and periods are allowed."
-                value="{{ request.form['name'] }}"></input>
+{% block content %}    
+    <div class="container-fluid">
+        <div class="row my-3">
+            <p class="text-center fs-4">Discover which of your father’s ex-girlfriends is attending the Harvard-Yale football game!</p>     
         </div>
+        <div id="splashPageContainer" class="row d-none">
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
+                <img src="/static/images/splash/index-32160348.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
+                <img src="/static/images/splash/index-4545737.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+            </div>
+            <div class="d-none d-sm-block col-4 col-md-3 col-lg-2 text-center">
+                <img src="/static/images/splash/index-5257222.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+            </div>
+            <div class="d-none d-md-block col-3 col-lg-2 text-center">
+                <img src="/static/images/splash/index-6787561.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+            </div>
+            <div class="d-none d-lg-block col-2 col-lg-2 text-center">
+                <img src="/static/images/splash/index-7959820.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+            </div>
+            <div class="d-none d-lg-block col-2 text-center">                    
+                <img src="/static/images/splash/index-712513.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+            </div>
+        </div>
+        <div id="almostMommyContainer" class="row align-items-center">
+            <div class="col-12 col-sm-6 text-center">
+                <img id="almostMommyPortrait" src="" style="height: 250px;" class="rounded" alt="Image of woman">
+            </div>
+            <div class="col-12 col-sm-6 text-center text-sm-start">
+                <h1 id="almostMommyName"></h1>
+            </div>
+        </div>
+        <form method="post">
+            <div class="row mt-5">
+                <div class="d-flex justify-content-center">
+                    <div class="input-group" style="max-width: 400px;">
+                        <input 
+                            type="text"
+                            class="form-control"
+                            placeholder="Please enter your name"
+                            name="name" 
+                            size="15" 
+                            maxlength="50"
+                            minlength="2"
+                            pattern="^[a-zA-Z\-\. ]+$" 
+                            title="Only letters, spaces, hyphens, and periods are allowed."
+                            aria-label="name"
+                            aria-describedby="button-addon">
+                        <button 
+                            class="btn text-white h2" 
+                            style="background-color: #002060;"
+                            type="submit"
+                            id="button-addon">GO!</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            almostMommy = "{{ my_almost_mommy_name }}" ;
+            const almostMommyImage = "{{ my_almost_mommy_img }}" ;
+            // const almostMommy = "Pennilyn Lott" ;
+            // const almostMommy = ""
+            const splashPageContainer = document.getElementById('splashPageContainer');
+            const almostMommyContainer = document.getElementById('almostMommyContainer');
+            const almostMommyName = document.getElementById('almostMommyName');
+            const almostMommyPortrait = document.getElementById('almostMommyPortrait');
+            function updateLayout() {
+                // Start by hiding both configurations
+                splashPageContainer.classList.add('d-none');
+                almostMommyContainer.classList.add('d-none');
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Find</button>
-        </div>
-        <h2>{{my_almost_mommy}}</h2>
-    </form>
+                // Show the relevant container depending on if a name was given
+                if (almostMommy === '') {
+                    splashPageContainer.classList.remove('d-none');
+                } 
+                else {
+                    almostMommyContainer.classList.remove('d-none');
+                    almostMommyName.textContent = almostMommy;
+                }
+                almostMommyPortrait.src = almostMommyImage;
+                almostMommyName.textContent = almostMommy;
+                almostMommy = ""; //Reset name
+            }
+
+            // Set initial state (e.g., if you want one visible by default or a default message)
+            updateLayout(); // Call once on page load to set initial visibility
+        });
+    </script>
 {% endblock %}
-
