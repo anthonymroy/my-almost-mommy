@@ -15,10 +15,10 @@ SQL_PATHFILE = CWD / './db/schema.sql'
 # SPLASH_DIRECTORY = STATIC_DIRECTORY + '/images/splash'
 # PORTRAIT_DIRECTORY = STATIC_DIRECTORY + '/images/portraits'
 # ASSIGNED_PORTRAIT_DIRECTORY = PORTRAIT_DIRECTORY + '/assigned'
-STATIC_DIRECTORY = './static'
-SPLASH_DIRECTORY = STATIC_DIRECTORY + '/images/splash'
-PORTRAIT_DIRECTORY = STATIC_DIRECTORY + '/images/portraits'
-ASSIGNED_PORTRAIT_DIRECTORY = PORTRAIT_DIRECTORY + '/assigned'
+STATIC_DIRECTORY = CWD / './static'
+SPLASH_DIRECTORY = STATIC_DIRECTORY / './images/splash'
+PORTRAIT_DIRECTORY = STATIC_DIRECTORY / './images/portraits'
+ASSIGNED_PORTRAIT_DIRECTORY = PORTRAIT_DIRECTORY / './assigned'
 
 
 def one_in(num:int, return_value:bool=True) -> bool:

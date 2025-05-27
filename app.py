@@ -18,7 +18,6 @@ def index():
     img_filepath = ''
     if request.method == 'POST':        
         seed = request.form['name'].strip().lower()
-        print(f'seed = {seed}')
         name = get_or_generate_name(seed)
         if name is None:
             name = ''
@@ -31,8 +30,8 @@ def index():
         if len(name) > 0:
             upsert_mom(seed, name, img_filename)
 
-    # print(f'name = {name}') 
-    # print(f'img_filepath = {img_filepath}')        
+    print(f'name = {name}') 
+    print(f'img_filepath = {img_filepath}')        
     return render_template(
         'index.html',
         my_almost_mommy_name=name,
