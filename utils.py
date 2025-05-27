@@ -80,8 +80,11 @@ def get_verified_image_directory(filename:str) -> str|None:
         test_directories = [SPLASH_DIRECTORY, PORTRAIT_DIRECTORY, ASSIGNED_PORTRAIT_DIRECTORY]
         for test_dir in test_directories:
             test_filepath = os.path.join(test_dir, filename)
-            if os.path.isfile(test_filepath):                
-                return test_dir
+            if os.path.isfile(test_filepath):  
+                path_components = os.path.normpath(test_dir).split(os.sep)  
+                static_index = path_components.index('static')      
+                result = os.path.join(os.sep, *path_components[static_index:])      
+                return result
     except TypeError:
         return None
     return None
@@ -358,7 +361,6 @@ def get_random_mom_portrait_filename(seed_name:any) -> str:
         all_entries = os.listdir(image_directory)
         for entry in all_entries:
             full_path = os.path.join(image_directory, entry)
-            print(f'full_path = {full_path}')
             # Check if the entry is a file
             if os.path.isfile(full_path) and entry.lower().endswith(image_extensions):
                 image_filenames.append(entry)
