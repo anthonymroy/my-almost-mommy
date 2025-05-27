@@ -30,8 +30,8 @@ def index():
         if len(name) > 0:
             upsert_mom(seed, name, img_filename)
 
-    # print(f'name = {name}') 
-    # print(f'img_filepath = {img_filepath}')        
+    print(f'name = {name}') 
+    print(f'img_filepath = {img_filepath}')        
     return render_template(
         'index.html',
         my_almost_mommy_name=name,
