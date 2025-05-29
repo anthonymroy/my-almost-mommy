@@ -39,14 +39,14 @@ def one_in(num:int, return_value:bool=True) -> bool:
         ans = return_value
     return ans
 
-def print_almost_mommy_result(seed_name:str, mom_name:str, points:int|str=None, image_filename:str=None) -> None:
+def print_mom_result(seed:str, name:str, points:int|str=None, image_filename:str=None) -> None:
     """
     Prints a formatted string indicating a relationship between two names,
     optionally including a point value.
 
     Args:
-        seed_name: The name of the 'seed'.
-        mom_name: The name of the 'mom'.
+        seed: The randomization seed.
+        name: The name of the 'mom'.
         points: An optional integer or string representing points associated with the relationship.
                 If None or an empty string (''), the points are not included in the output.
                 Defaults to None.
@@ -56,12 +56,12 @@ def print_almost_mommy_result(seed_name:str, mom_name:str, points:int|str=None, 
         None.
     """
     if points is None:
-        print(f'{seed_name} -> {mom_name} @ {image_filename}')
+        print(f'{seed} -> {name} @ {image_filename}')
         return
     if points == '':
-        print(f'{seed_name} -> {mom_name} @ {image_filename}')
+        print(f'{seed} -> {name} @ {image_filename}')
         return
-    print(f'{seed_name} -> {mom_name} ({points} points) @ {image_filename}') 
+    print(f'{seed} -> {name} ({points} points) @ {image_filename}') 
 
 def get_db_connection() -> sqlite3.Connection:
     """

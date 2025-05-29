@@ -1,4 +1,4 @@
-from utils import get_db_connection, print_almost_mommy_result, SQL_PATHFILE
+from utils import get_db_connection, print_mom_result, SQL_PATHFILE
 
 def initialize_db():
     connection = get_db_connection()
@@ -22,7 +22,7 @@ def echo_db():
     moms = connection.execute('SELECT * FROM moms').fetchall()
     print('My Almost Mommy Database')
     for mom in moms:
-        print_almost_mommy_result(mom['seed'], mom['name'], image_filename=mom['image'])
+        print_mom_result(mom['seed'], mom['name'], image_filename=mom['image'])
     connection.close()
 
 if __name__ == '__main__':

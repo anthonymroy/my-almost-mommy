@@ -25,12 +25,12 @@
                 <img id="portrait6" src="" style="height: 200px;" class="rounded" alt="Image of woman">
             </div>
         </div>
-        <div id="almostMommyContainer" class="row align-items-center">
+        <div id="momContainer" class="row align-items-center">
             <div class="col-12 col-sm-6 text-center">
-                <img id="almostMommyPortrait" src="" style="height: 250px;" class="rounded" alt="Image of woman">
+                <img id="momImage" src="" style="height: 250px;" class="rounded" alt="Image of woman">
             </div>
             <div class="col-12 col-sm-6 text-center text-sm-start">
-                <h1 id="almostMommyName"></h1>
+                <h1 id="momName"></h1>
             </div>
         </div>
         <form method="post">
@@ -67,30 +67,32 @@
             const portrait4 = "{{ portrait_4 }}" ;
             const portrait5 = "{{ portrait_5 }}" ;
             const portrait6 = "{{ portrait_6 }}" ;
-            almostMommy = "{{ my_almost_mommy_name }}" ;
-            const almostMommyImage = "{{ my_almost_mommy_img }}" ;
+            almostMommyName = "{{ almost_mommy_name }}" ;
+            const almostMommyImage = "{{ almost_mommy_img }}" ;
+
             const portraitContainer = document.getElementById('portraitContainer');
-            const almostMommyContainer = document.getElementById('almostMommyContainer');
-            const almostMommyName = document.getElementById('almostMommyName');
             const portrait1Element = document.getElementById('portrait1');
             const portrait2Element = document.getElementById('portrait2');
             const portrait3Element = document.getElementById('portrait3');
             const portrait4Element = document.getElementById('portrait4');
             const portrait5Element = document.getElementById('portrait5');
             const portrait6Element = document.getElementById('portrait6');
-            const almostMommyPortrait = document.getElementById('almostMommyPortrait');
+            
+            const momContainer = document.getElementById('momContainer');
+            const momNameElement = document.getElementById('momName');
+            const momImageElement = document.getElementById('momImage');
             function updateLayout() {
                 // Start by hiding both configurations
                 portraitContainer.classList.add('d-none');
-                almostMommyContainer.classList.add('d-none');
+                momContainer.classList.add('d-none');
 
                 // Show the relevant container depending on if a name was given
-                if (almostMommy === '') {
+                if (almostMommyName === '') {
                     portraitContainer.classList.remove('d-none');
                 } 
                 else {
-                    almostMommyContainer.classList.remove('d-none');
-                    almostMommyName.textContent = almostMommy;
+                    momContainer.classList.remove('d-none');
+                    momNameElement.textContent = almostMommyName;
                 }
                 portrait1Element.src = portrait1;
                 portrait2Element.src = portrait2;
@@ -98,9 +100,9 @@
                 portrait4Element.src = portrait4;
                 portrait5Element.src = portrait5;
                 portrait6Element.src = portrait6;
-                almostMommyPortrait.src = almostMommyImage;
-                almostMommyName.textContent = almostMommy;
-                almostMommy = ""; //Reset name in case of reload
+                momImageElement.src = almostMommyImage;
+                momNameElement.textContent = almostMommyName;
+                almostMommyName = ""; //Reset name in case of reload
             }
 
             // Set initial state (e.g., if you want one visible by default or a default message)

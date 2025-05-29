@@ -4,7 +4,7 @@ from utils import (
     get_mom_from_db, 
     generate_random_mom_name,
     generate_random_strings,
-    print_almost_mommy_result,
+    print_mom_result,
     upsert_mom
 )
 
@@ -32,7 +32,7 @@ def add_dialog():
     seed_name = input("Enter seed name: ").lower()
     db_mom_name, db_img_file = get_mom_from_db(seed_name)
     if db_mom_name is not None:
-        print_almost_mommy_result(seed_name, db_mom_name, image_filename=db_img_file)
+        print_mom_result(seed_name, db_mom_name, image_filename=db_img_file)
         if not confirmation_dialog("Overwrite?"):
             print("Add canceled")
             return
@@ -69,7 +69,7 @@ def print_db():
     moms = connection.execute('SELECT * FROM moms').fetchall()
     print('My Almost Mommy Database')
     for mom in moms:
-        print_almost_mommy_result(mom['seed'], mom['name'], image_filename=mom['image'])
+        print_mom_result(mom['seed'], mom['name'], image_filename=mom['image'])
     connection.close()
 
 def test_single_dialog():
@@ -85,7 +85,7 @@ def test_single_dialog():
             mom_name,points = generate_random_mom_name(seed_name)
             method = 'Generated'
         print(f'Method: {method}')
-        print_almost_mommy_result(seed_name, mom_name, points)
+        print_mom_result(seed_name, mom_name, points)
 
 def test_list_dialog():
     while(True):
@@ -103,7 +103,7 @@ def test_list_dialog():
         print('\n')
         for seed in random_seeds:
             mom,points = generate_random_mom_name(seed)
-            print_almost_mommy_result('', mom, points)
+            print_mom_result('', mom, points)
 
 def main():
     while True:
