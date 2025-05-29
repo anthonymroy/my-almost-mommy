@@ -5,24 +5,24 @@
         <div class="row my-3">
             <p class="text-center fs-4">Discover which of your father’s ex-girlfriends is attending the Harvard-Yale football game!</p>     
         </div>
-        <div id="splashPageContainer" class="row d-none">
+        <div id="portraitContainer" class="row d-none">
             <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
-                <img src="/static/images/index-7959820.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+                <img id="portrait1" src="" style="height: 200px;" class="rounded" alt="Image of woman">
             </div>
             <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">                
-                <img src="/static/images/index-32160348.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+                <img id="portrait2" src="" style="height: 200px;" class="rounded" alt="Image of woman">
             </div>
             <div class="d-none d-sm-block col-4 col-md-3 col-lg-2 text-center">
-                <img src="/static/images/index-5257222.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+                <img id="portrait3" src="" style="height: 200px;" class="rounded" alt="Image of woman">
             </div>
             <div class="d-none d-md-block col-3 col-lg-2 text-center">                
-                <img src="/static/images/index-4545737.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+                <img id="portrait4" src="" style="height: 200px;" class="rounded" alt="Image of woman">
             </div>
             <div class="d-none d-lg-block col-2 col-lg-2 text-center">                
-                <img src="/static/images/index-6787561.jpg" style="height: 200px;" class="rounded" alt="Image of woman">             
+                <img id="portrait5" src="" style="height: 200px;" class="rounded" alt="Image of woman">             
             </div>
             <div class="d-none d-lg-block col-2 text-center">                    
-                <img src="/static/images/index-712513.jpg" style="height: 200px;" class="rounded" alt="Image of woman">
+                <img id="portrait6" src="" style="height: 200px;" class="rounded" alt="Image of woman">
             </div>
         </div>
         <div id="almostMommyContainer" class="row align-items-center">
@@ -61,28 +61,46 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const portrait1 = "{{ portrait_1 }}" ;
+            const portrait2 = "{{ portrait_2 }}" ;
+            const portrait3 = "{{ portrait_3 }}" ;
+            const portrait4 = "{{ portrait_4 }}" ;
+            const portrait5 = "{{ portrait_5 }}" ;
+            const portrait6 = "{{ portrait_6 }}" ;
             almostMommy = "{{ my_almost_mommy_name }}" ;
             const almostMommyImage = "{{ my_almost_mommy_img }}" ;
-            const splashPageContainer = document.getElementById('splashPageContainer');
+            const portraitContainer = document.getElementById('portraitContainer');
             const almostMommyContainer = document.getElementById('almostMommyContainer');
             const almostMommyName = document.getElementById('almostMommyName');
+            const portrait1Element = document.getElementById('portrait1');
+            const portrait2Element = document.getElementById('portrait2');
+            const portrait3Element = document.getElementById('portrait3');
+            const portrait4Element = document.getElementById('portrait4');
+            const portrait5Element = document.getElementById('portrait5');
+            const portrait6Element = document.getElementById('portrait6');
             const almostMommyPortrait = document.getElementById('almostMommyPortrait');
             function updateLayout() {
                 // Start by hiding both configurations
-                splashPageContainer.classList.add('d-none');
+                portraitContainer.classList.add('d-none');
                 almostMommyContainer.classList.add('d-none');
 
                 // Show the relevant container depending on if a name was given
                 if (almostMommy === '') {
-                    splashPageContainer.classList.remove('d-none');
+                    portraitContainer.classList.remove('d-none');
                 } 
                 else {
                     almostMommyContainer.classList.remove('d-none');
                     almostMommyName.textContent = almostMommy;
                 }
+                portrait1Element.src = portrait1;
+                portrait2Element.src = portrait2;
+                portrait3Element.src = portrait3;
+                portrait4Element.src = portrait4;
+                portrait5Element.src = portrait5;
+                portrait6Element.src = portrait6;
                 almostMommyPortrait.src = almostMommyImage;
                 almostMommyName.textContent = almostMommy;
-                almostMommy = ""; //Reset name
+                almostMommy = ""; //Reset name in case of reload
             }
 
             // Set initial state (e.g., if you want one visible by default or a default message)

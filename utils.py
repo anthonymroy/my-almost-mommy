@@ -11,14 +11,10 @@ import sqlite3
 CWD = Path(__file__).parent.resolve()
 DATABASE_PATHFILE = CWD / './db/database.db'
 SQL_PATHFILE = CWD / './db/schema.sql'
-# STATIC_DIRECTORY = './static'
-# SPLASH_DIRECTORY = STATIC_DIRECTORY + '/images/splash'
-# PORTRAIT_DIRECTORY = STATIC_DIRECTORY + '/images/portraits'
-# ASSIGNED_PORTRAIT_DIRECTORY = PORTRAIT_DIRECTORY + '/assigned'
 STATIC_DIRECTORY = CWD / './static'
-SPLASH_DIRECTORY = STATIC_DIRECTORY / './images/splash'
-PORTRAIT_DIRECTORY = STATIC_DIRECTORY / './images/portraits'
-ASSIGNED_PORTRAIT_DIRECTORY = PORTRAIT_DIRECTORY / './assigned'
+PORTRAITS_DIRECTORY = STATIC_DIRECTORY / './images/portraits'
+MOMS_IMAGE_DIRECTORY = STATIC_DIRECTORY / './images/moms'
+ASSIGNED_MOMS_IMAGE_DIRECTORY = MOMS_IMAGE_DIRECTORY / './assigned'
 
 
 def one_in(num:int, return_value:bool=True) -> bool:
@@ -77,7 +73,7 @@ def get_db_connection() -> sqlite3.Connection:
 
 def get_verified_image_directory(filename:str) -> str|None:
     try:
-        test_directories = [SPLASH_DIRECTORY, PORTRAIT_DIRECTORY, ASSIGNED_PORTRAIT_DIRECTORY]
+        test_directories = [PORTRAITS_DIRECTORY, MOMS_IMAGE_DIRECTORY, ASSIGNED_MOMS_IMAGE_DIRECTORY]
         for test_dir in test_directories:
             test_filepath = os.path.join(test_dir, filename)
             if os.path.isfile(test_filepath):  
@@ -254,58 +250,6 @@ def acceptable_name(first_name:str, middle_name:str, last_name:str, preppy_point
             return False
     return True
 
-# def generate_random_mom(seed_name:any) -> tuple[str,int,str]:
-#     """
-#     Generates a random "mom" name (first, middle, last) and its associated
-#     total "preppy points" based on a given seed.
-
-#     Args:
-#         seed_name: An arbitrary value used to seed the random number generator.
-#                    This ensures that the same seed will produce the same sequence
-#                    of generated names.
-
-#     Returns:
-#         A tuple containing the generated full "mom" name (string), the
-#         total accumulated "preppy points" (integer) for that name, and
-#         a filename for a "mom" image.
-#     """
-#     random.seed(seed_name)      
-#     while True:
-#         preppy_points = 0
-#         first_name, points = generate_first_name()
-#         preppy_points += points
-#         middle_name, points = generate_middle_name()
-#         preppy_points += points
-#         last_name, points = generate_last_name()
-#         preppy_points += points
-#         if acceptable_name(first_name, middle_name, last_name, preppy_points):
-#             break
-
-#     if len(middle_name) == 0 or ('"' in first_name and '"' in middle_name):
-#         first_name = first_name.replace('"','') 
-
-#     mom = first_name+' '+middle_name+' '+last_name
-#     mom = mom.replace('  ',' ')
-
-#     image_filename = None
-#     image_directory = PORTRAIT_DIRECTORY
-#     image_filenames = []
-#     try:
-#         image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg')  
-#         all_entries = os.listdir(image_directory)
-#         for entry in all_entries:
-#             full_path = os.path.join(image_directory, entry)
-#             # Check if the entry is a file
-#             if os.path.isfile(full_path) and entry.lower().endswith(image_extensions):
-#                 image_filenames.append(entry)
-#     except FileNotFoundError:
-#         print(f"Error: Directory '{image_directory}' not found.")
-#     except Exception as e:
-#         print(f"An error occurred: {e}")
-#     image_filename = random.choice(image_filenames)   
-    
-#     return mom, preppy_points, image_filename
-
 def generate_random_mom_name(seed_name:any) -> tuple[str,int]:
     """
     Generates a random "mom" name (first, middle, last) and its associated
@@ -354,7 +298,7 @@ def get_random_mom_portrait_filename(seed_name:any) -> str:
     """
     random.seed(seed_name)      
     image_filename = None
-    image_directory = PORTRAIT_DIRECTORY
+    image_directory = MOMS_IMAGE_DIRECTORY
     image_filenames = []
     try:
         image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg')  
@@ -368,8 +312,7 @@ def get_random_mom_portrait_filename(seed_name:any) -> str:
         print(f"Error: Directory '{image_directory}' not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
-    image_filename = random.choice(image_filenames)   
-    
+    image_filename = random.choice(image_filenames)       
     return image_filename
 
 def generate_random_strings(count:int,min_length:int=5, max_length:int=32) -> list[str]:
@@ -410,3 +353,24 @@ def get_or_generate_image_filename(seed:str) -> str|None:
         return image_filename
     image_filename = get_random_mom_portrait_filename(seed)
     return image_filename
+
+def get_portraits(shuffle:bool = True) -> list[str]:
+    random.seed()      
+    image_directory = PORTRAITS_DIRECTORY
+    image_filenames = []
+    try:
+        image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg')  
+        all_entries = os.listdir(image_directory)
+        for entry in all_entries:
+            full_path = os.path.join(image_directory, entry)
+            # Check if the entry is a file
+            if os.path.isfile(full_path) and entry.lower().endswith(image_extensions):
+                image_filenames.append(entry)
+    except FileNotFoundError:
+        print(f"Error: Directory '{image_directory}' not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    if shuffle:
+        random.shuffle(image_filenames)
+    return image_filenames
+                          
