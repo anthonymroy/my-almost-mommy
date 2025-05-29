@@ -42,14 +42,6 @@ def add_dialog():
         image_filename = input("Enter image filename: ")
     if confirmation_dialog(f"Add {seed_name} -> {mom_name} @ {image_filename}?"):
         upsert_mom(seed_name, mom_name, image_filename)
-        # conn = get_db_connection()
-        # cur = conn.cursor()
-        # if db_mom_name is None:
-        #     cur.execute("INSERT INTO moms (seed, name, image) VALUES (?, ?, ?)",(seed_name, mom_name, image_filename))
-        # else:
-        #     cur.execute("UPDATE moms SET name = ?, image = ? WHERE seed = ?",(mom_name,image_filename,seed_name))
-        # conn.commit()
-        # conn.close()
     else:
         print("Add canceled")
         return
