@@ -86,7 +86,7 @@ def main():
             filepath = os.path.join(image_directory, filename)
             # Check if the entry is a file
             if os.path.isfile(filepath) and filename.lower().endswith(image_extensions):
-                resize_image(filepath, filepath, desired_width=1200, desired_height=1200)
+                resize_image(filepath, filepath, desired_width=800, desired_height=800, enlarge=True)
     except FileNotFoundError:
         print(f"Error: Directory '{image_directory}' not found.")
     except Exception as e:
