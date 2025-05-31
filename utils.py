@@ -8,6 +8,7 @@ import random
 import string
 import sqlite3
 
+#------------------------- FILEPATHS -------------------------#
 CWD = Path(__file__).parent.resolve()
 DATABASE_PATHFILE = CWD / './db/database.db'
 SQL_PATHFILE = CWD / './db/schema.sql'
@@ -15,7 +16,7 @@ STATIC_DIRECTORY = CWD / './static'
 PORTRAITS_DIRECTORY = STATIC_DIRECTORY / './images/portraits'
 MOMS_IMAGE_DIRECTORY = STATIC_DIRECTORY / './images/moms'
 ASSIGNED_MOMS_IMAGE_DIRECTORY = MOMS_IMAGE_DIRECTORY / './assigned'
-
+#------------------------- --------- -------------------------#
 
 def one_in(num:int, return_value:bool=True) -> bool:
     """
@@ -72,6 +73,17 @@ def get_db_connection() -> sqlite3.Connection:
     return conn
 
 def get_verified_image_directory(filename:str) -> str|None:
+    """
+    Verifies if a given filename exists in a predefined set of image directories
+    and returns its relative path from the 'static' directory if found.
+
+    Args:
+        filename (str): The name of the file to search for (e.g., "my_image.jpg").
+
+    Returns:
+        str | None: The relative path to the image starting from the 'static' directory
+                    (e.g., "/static/portraits/my_image.jpg") if found, otherwise None.
+    """
     try:
         test_directories = [PORTRAITS_DIRECTORY, MOMS_IMAGE_DIRECTORY, ASSIGNED_MOMS_IMAGE_DIRECTORY]
         for test_dir in test_directories:
@@ -104,6 +116,15 @@ def get_mom_from_db(seed_name:str) -> tuple[str|None, str|None]:
     return None, None
 
 def upsert_mom(seed:str,name:str,image:str) -> None:
+    """
+    Inserts a new 'mom' record into the database if the 'seed' does not exist,
+    or updates an existing 'mom' record if the 'seed' already exists.
+
+    Args:
+        seed (str): A unique identifier for the 'mom' record. This acts as the primary key.
+        name (str): The name of the 'mom'.
+        image (str): The filename of the mom's image.
+    """
     db_name, _ = get_mom_from_db(seed)
     conn = get_db_connection()
     cur = conn.cursor()
@@ -337,6 +358,17 @@ def generate_random_strings(count:int,min_length:int=5, max_length:int=32) -> li
     return random_strings
 
 def get_or_generate_name(seed:str) -> str|None:
+    """
+    Retrieves a mom's' name from the database based on a given seed.
+    If the name is not found in the database, it generates a random name.
+
+    Args:
+        seed (str): A unique string identifier used to look up or generate the name.
+
+    Returns:
+        str | None: The 'mom's' name if found or successfully generated,
+                    otherwise None if the seed is invalid.
+    """
     if seed is None or seed == '':
         return None
     name, _ = get_mom_from_db(seed)
@@ -346,6 +378,19 @@ def get_or_generate_name(seed:str) -> str|None:
     return name
 
 def get_or_generate_image_filename(seed:str) -> str|None:
+    """
+    Retrieves a mom's' image filename from the database based on a given seed.
+    If the image filename is found in the database and the file exists in a
+    verified directory, it returns that filename. Otherwise, it generates
+    a random image filename.
+
+    Args:
+        seed (str): A unique string identifier used to look up or generate the image filename.
+
+    Returns:
+        str | None: The 'mom's' image filename if found or successfully generated,
+                    otherwise None if the seed is invalid.
+    """
     if seed is None or seed == '':
         return None
     _, image_filename = get_mom_from_db(seed)
@@ -355,6 +400,18 @@ def get_or_generate_image_filename(seed:str) -> str|None:
     return image_filename
 
 def get_portraits(shuffle:bool = True) -> list[str]:
+    """
+    Retrieves a list of filenames for available mom portraits from a predefined directory.
+    Args:
+        shuffle (bool): If `True`, the list of portrait filenames will be
+                        randomly shuffled. Defaults to `True`.
+
+    Returns:
+        list[str]: A list of strings, where each string is the **filename**
+                   (e.g., "portrait1.jpg") of an available mom portrait.
+                   Returns an empty list if no portraits are found, the
+                   directory is inaccessible, or an error occurs during scanning.
+    """
     random.seed()      
     image_directory = PORTRAITS_DIRECTORY
     image_filenames = []
