@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 
+{% block adsense %}
+    <meta name="google-adsense-account" content="ca-pub-5763651481096362">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5763651481096362"
+        crossorigin="anonymous"></script>
+{% endblock %}
+
 {% block content %}    
     <div class="container-fluid">
         <div class="row my-3">
-            <p class="text-center fs-4">Use the <b>My Almost Mommy Generator</b> to discover which of your father’s former girlfriends is attending the Harvard-Yale football game!</p>     
+            <p class="text-center fs-4">
+                Use the <b>My Almost Mommy Generator</b> to discover which of your father’s
+                former girlfriends is attending this year's Harvard-Yale football game!
+            </p>
         </div>
         <div id="portraitContainer" class="row d-none">
             <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
@@ -34,7 +43,7 @@
             </div>
         </div>
         <form method="post">
-            <div class="row mt-5">
+            <div class="row my-5">
                 <div class="d-flex justify-content-center">
                     <div class="input-group" style="max-width: 400px;">
                         <input 
@@ -50,13 +59,34 @@
                             aria-describedby="button-addon">
                         <button 
                             class="btn text-white" 
-                            style="background-color: #002060; font-family: Cormorant Garamond; font-weight: bold;""
+                            style="background-color: #002060; font-family: Cormorant Garamond; font-weight: bold;"
                             type="submit"
                             id="button-addon">GO!</button>
                     </div>
                 </div>
             </div>
         </form>
+        <div class="row my-3">
+            <p class="text-start text-md-center"> 
+                The inspiration for <strong>AlmostGilmore.com</strong> came from the confluence of two 
+                iconic aspects of 2000's pop culture. First, the legendary
+                <a href="http://www.mess.be/inickgenwuname.php/">The Wu-Tang Name Generator</a>, the same tool that 
+                famously gave Donald Glover his stage name, Childish Gambino. Second, the classic (and perfectly cringy) 
+                <a href="https://www.tiktok.com/@aeiomg/video/7233324918446853381">dialogue from Gilmore Girls</a>
+                where Lorelai Gilmore refers to her father’s college sweetheart, Pennilyn Lott, as “my almost Mommy.” 
+            </p>
+        <!-- </div>
+        <div class="row my-3"> -->
+            <p class="text-start text-md-center">
+                This page was created to celebrate a niche piece of TV history while practicing full-stack programming.                
+                You can find the code for this project on <a href="https://github.com/anthonymroy/my-almost-mommy">Github</a>.
+                Making this site was a ton of fun for me, and I hope you have fun playing around as well!
+            </p>
+            <p class="text-muted small text-center">
+                Note: This is a fan-made parody site and is not affiliated with Gilmore Girls, Warner Bros., or the Wu-Tang Clan.
+            </p>
+        </div>
+        
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
